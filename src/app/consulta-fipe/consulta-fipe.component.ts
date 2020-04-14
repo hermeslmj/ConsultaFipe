@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Tipos, Marcas, Modelos, AnoModelo, Fipe } from '../_models';
 import { FipeService } from '../_services/fipe.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { NgxLoadingComponent } from 'ngx-loading/lib/ngx-loading.component';
 
 
 @Component({
@@ -13,6 +14,9 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 })
 export class ConsultaFipeComponent implements OnInit {
 
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  @ViewChild('customLoadingTemplate', { static: false }) customLoadingTemplate: TemplateRef<any>;
+  
   fipeForm: FormGroup;
   modalRef: BsModalRef;
 
@@ -21,13 +25,14 @@ export class ConsultaFipeComponent implements OnInit {
   public listaModelos: Modelos[] = [];
   public listaAnosModelo: AnoModelo[] = [];
   public fipe: Fipe;
+  public loading: boolean = false;
   
   
   constructor(
     private fipeservice: FipeService
     , private toastr: ToastrService
     , private fb: FormBuilder
-    , private modalService: BsModalService
+    
   ) { }
 
   ngOnInit(): void {
@@ -40,37 +45,44 @@ export class ConsultaFipeComponent implements OnInit {
   }
 
   getMarcas(tipo: string) {
+    this.loading = true;
     this.fipeservice.getMarcas(tipo).subscribe(
       (marcas) => {
         this.listaMarcas = marcas;
-        //console.log(marcas);
+        this.loading = false;
       },
       error => {
+        this.loading = false;
         this.toastr.error("Erro ao obter Marcas");
       }
     );
   }
 
   getModelos(tipo: string, codMarca: number) {
+    this.loading = true;
     this.fipeservice.getModelos(tipo, codMarca).subscribe(
       (modelos) => {
         this.listaModelos = modelos["modelos"];
         this.listaAnosModelo = modelos["anos"];
-        //console.log(modelos);
+        this.loading = false;
       },
       error => {
+        this.loading = false;
         this.toastr.error("Erro ao obter Modelos");
       }
     );
   }
 
   getAnosModelo(tipo: string, codMarca: number, codModelo:  number) {
+    this.loading = true;
     this.fipeservice.getAnosModelo(tipo, codMarca, codModelo).subscribe(
       (anosModelo) => {
         this.listaAnosModelo = anosModelo;
-        //console.log(anosModelo);
+        this.loading = false;
+        
       },
       error => {
+        this.loading = false;
         this.toastr.error("Erro ao obter Ano/Modelo");
       }
     );
@@ -78,11 +90,14 @@ export class ConsultaFipeComponent implements OnInit {
 
   getFipe(tipo: string, codMarca: number, codModelo:  number, anoModelo: string)
   {
+    this.loading = true;
     this.fipeservice.getFipe(tipo, codMarca, codModelo, anoModelo).subscribe(
       (fipe: Fipe) => {
         this.fipe = fipe;
+        this.loading = false;
       },
       error => {
+        this.loading = false;
         this.toastr.error("Erro ao obter Fipe");
       }
     );

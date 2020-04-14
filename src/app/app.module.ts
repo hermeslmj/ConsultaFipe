@@ -5,6 +5,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule} from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgxLoadingModule } from 'ngx-loading';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -24,7 +25,8 @@ import { ConsultaFipeComponent } from './consulta-fipe/consulta-fipe.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    NgxLoadingModule.forRoot({})
 
   ],
   providers: [],

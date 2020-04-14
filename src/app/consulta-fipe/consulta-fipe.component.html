@@ -11,7 +11,8 @@
         <div class="col">
             <label for="select-marcas">Marcas</label>
             <select formControlName="marcas" class="form-control" id="select-marcas" (change)="getModelos(fipeForm.get('tipos').value, $event.target.value)">
-              <option *ngFor="let m of listaMarcas" [value]="m.codigo" >{{ m.nome }}</option>
+                <option></option>
+                <option *ngFor="let m of listaMarcas" [value]="m.codigo" >{{ m.nome }}</option>
             </select>
         </div>
     </div>
@@ -21,6 +22,7 @@
             <select formControlName="modelos" class="form-control" id="select-modelos"
                 (change)="getAnosModelo(fipeForm.get('tipos').value, fipeForm.get('marcas').value, $event.target.value)"
             >
+                <option></option>
                 <option *ngFor="let md of listaModelos" [value]="md.codigo" >{{ md.nome }}</option>
             </select>
         </div>
@@ -74,3 +76,4 @@
         </div>
     </div>
 </div>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
