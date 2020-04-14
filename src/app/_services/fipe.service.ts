@@ -18,58 +18,70 @@ export class FipeService {
   getTipos(): Tipos[] 
   {
     let _tipos: Tipos[] = [];
-    _tipos.push({"nome": "carros"});
-    _tipos.push({"nome": "motos"});
-    _tipos.push({"nome": "caminhoes"});
+
+    let T1 = new Tipos();
+    let T2 = new Tipos();
+    let T3 = new Tipos();
+    T1.nome = "carros";
+    T2.nome = "motos";
+    T3.nome = "caminhoes";
+
+    _tipos.push(T1);
+    _tipos.push(T2);
+    _tipos.push(T3);
+
     
     return _tipos;
   }
 
 
-  getMarcas(tipo: Tipos): Observable<Marcas[]> 
+  getMarcas(tipo: string): Observable<Marcas[]> 
   {
-      return this.httpClient.get<Marcas[]>(this.baseUrl + tipo.nome + "/" + this.marcasEndpoint);
+      return this.httpClient.get<Marcas[]>(this.baseUrl + tipo + "/" + this.marcasEndpoint);
   }
 
-  getModelos(tipo: Tipos, marca: Marcas): Observable<Modelos[]>
+  getModelos(tipo: string, codMarca: number): Observable<any>
   {
-    return this.httpClient.get<Modelos[]>(this.baseUrl + tipo.nome + "/" + this.marcasEndpoint + "/" + marca.codigo + "/" + this.modelosEndpoint);
+    return this.httpClient.get<any>(this.baseUrl + tipo + "/" + this.marcasEndpoint + "/" + codMarca + "/" + this.modelosEndpoint);
   }
 
-  getAnosModelo(tipo: Tipos, marca: Marcas, modelo:  Modelos): Observable<AnoModelo[]>
+  getAnosModelo(tipo: string, codMarca: number, codModelo:  number): Observable<AnoModelo[]>
   {
-    return this.httpClient.get<Modelos[]>
+    return this.httpClient.get<AnoModelo[]>
       (
         this.baseUrl + 
-        tipo.nome + 
+        tipo + 
         "/" + 
         this.marcasEndpoint +
         "/" + 
-        marca.codigo + 
+        codMarca + 
         "/" + 
         this.modelosEndpoint + 
         "/" + 
-        modelo.codigo
+        codModelo +
+        "/" + 
+        this.anosEndpoint
       );
   }
 
-  getFipe(tipo: Tipos, marca: Marcas, modelo:  Modelos, anoModelo: AnoModelo): Observable<Fipe> 
+  getFipe(tipo: string, codMarca: number, codModelo:  number, anoModelo: string): Observable<Fipe> 
   {
     return this.httpClient.get<Fipe>
       (
         this.baseUrl + 
-        tipo.nome + 
+        tipo + 
         "/" + 
         this.marcasEndpoint +
         "/" + 
-        marca.codigo + 
+        codMarca + 
         "/" + 
         this.modelosEndpoint + 
         "/" + 
-        modelo.codigo +
+        codModelo +
+        "/" +
         this.anosEndpoint +
         "/" +
-        anoModelo.codigo
+        anoModelo
       );
   }
 

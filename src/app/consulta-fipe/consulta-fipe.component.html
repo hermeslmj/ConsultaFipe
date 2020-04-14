@@ -1,1 +1,60 @@
-<p>consulta-fipe works!</p>
+<form [formGroup]="fipeForm">
+    <div class="form-row">
+        <div class="col">
+            <label for="select-tipos">Tipos de Veículos</label>
+            <select formControlName="tipos" class="form-control" id="select-tipos" (change)="getMarcas($event.target.value)">
+                <option *ngFor="let tp of listaTipos" [value]="tp.nome">{{ tp.nome }}</option>
+              </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <label for="select-marcas">Marcas</label>
+            <select formControlName="marcas" class="form-control" id="select-marcas" (change)="getModelos(fipeForm.get('tipos').value, $event.target.value)">
+              <option *ngFor="let m of listaMarcas" [value]="m.codigo" >{{ m.nome }}</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <label for="select-modelos">Modelos</label>
+            <select formControlName="modelos" class="form-control" id="select-modelos"
+                (change)="getAnosModelo(fipeForm.get('tipos').value, fipeForm.get('marcas').value, $event.target.value)"
+            >
+                <option *ngFor="let md of listaModelos" [value]="md.codigo" >{{ md.nome }}</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <label for="select-marcas">Anos</label>
+            <select formControlName="anos" class="form-control" id="select-anos">
+                <option *ngFor="let am of listaAnosModelo" [value]="am.codigo" >{{ am.nome }}</option>
+            </select>
+        </div>
+    </div>
+    <hr>
+    <button type="button" class="btn btn-primary" (click)="obterFipe(fipeModal)">Enviar</button>
+  </form>
+  
+<div bsModal #fipeModal="bs-modal" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="dialog-sizes-name1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="dialog-sizes-name1" class="modal-title pull-left">Fipe</h4>
+                <button type="button" class="close pull-right" (click)="fipeModal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" *ngIf="fipe != null">
+                <p>{{fipe.Marca}}</p>
+                <p>{{fipe.Modelo}} - {{fipe.AnoModelo}}</p>
+                <p>{{fipe.Combustivel}}</p>
+                <p>{{fipe.CodigoFipe}}</p>
+                <p>{{fipe.MesReferencia}}</p>
+                <p>{{fipe.Valor}}</p>
+            </div>
+        </div>
+    </div>
+</div>
