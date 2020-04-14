@@ -81,7 +81,6 @@ export class ConsultaFipeComponent implements OnInit {
     this.fipeservice.getFipe(tipo, codMarca, codModelo, anoModelo).subscribe(
       (fipe: Fipe) => {
         this.fipe = fipe;
-        console.log(this.fipe);
       },
       error => {
         this.toastr.error("Erro ao obter Fipe");
@@ -112,6 +111,4 @@ export class ConsultaFipeComponent implements OnInit {
     this.getFipe(this.fipeForm.get('tipos').value, this.fipeForm.get('marcas').value, this.fipeForm.get('modelos').value , this.fipeForm.get('anos').value);
     this.openModal(template);
   }
-
-
 }

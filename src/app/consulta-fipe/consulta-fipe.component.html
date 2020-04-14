@@ -27,8 +27,9 @@
     </div>
     <div class="form-row">
         <div class="col">
-            <label for="select-marcas">Anos</label>
+            <label for="select-anos">Anos</label>
             <select formControlName="anos" class="form-control" id="select-anos">
+                <option></option>
                 <option *ngFor="let am of listaAnosModelo" [value]="am.codigo" >{{ am.nome }}</option>
             </select>
         </div>
@@ -48,12 +49,27 @@
                 </button>
             </div>
             <div class="modal-body" *ngIf="fipe != null">
-                <p>{{fipe.Marca}}</p>
-                <p>{{fipe.Modelo}} - {{fipe.AnoModelo}}</p>
-                <p>{{fipe.Combustivel}}</p>
-                <p>{{fipe.CodigoFipe}}</p>
-                <p>{{fipe.MesReferencia}}</p>
-                <p>{{fipe.Valor}}</p>
+                <div class="card">
+                    <div class="card-header text-center">
+                        {{fipe.Modelo}}
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 alert-success text-center"><h5 class="card-title">Valor: {{fipe.Valor}}</h5></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Marca: {{fipe.Marca}}</div>
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Combustível: {{fipe.Combustivel}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Código Fipe: {{fipe.CodigoFipe}}</div>
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Ano: {{fipe.AnoModelo}}</div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                       Mês Referência: {{fipe.MesReferencia}}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
