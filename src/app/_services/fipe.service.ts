@@ -1,19 +1,50 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, empty } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Marcas,Fipe, AnoModelo, Modelos, Tipos } from '../_models';
+import { TabelaReferencia } from '../_models/tabelaReferencia';
+import { FipeRequest } from '../_models/fipeRequest';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FipeService {
 
-  baseUrl = "https://parallelum.com.br/fipe/api/v1/";
-  marcasEndpoint = "marcas";
-  modelosEndpoint = "modelos";
-  anosEndpoint = "anos";
+ 
 
   constructor(private httpClient: HttpClient) {}
+
+
+  /*
+    FUNCOES E DADOS UTILIZADOS PARA CONSULTA FIPE DIRETAMENTE DO SITE, SIMULANDO AS REQUESTS OBSERVADAS NO SITE
+  */
+ fipeUrlDireto = "https://veiculos.fipe.org.br/api/veiculos/";
+ fipeTabelaReferenciaEndpoint = "/ConsultarTabelaDeReferencia";
+ fipeMarcasEndpoint = "/ConsultarMarcas";
+ fipeModelosEndpoint= "/ConsultarModelos";
+ fipeAnoModeloEndpoint = "/ConsultarAnoModelo";
+
+ getFipeTabelaReferencia(): Observable<TabelaReferencia[]> {
+    return this.httpClient.post<TabelaReferencia[]>(this.fipeUrlDireto + this.fipeTabelaReferenciaEndpoint, empty);
+ }
+
+ getFipeMarcas(fipeRequest: FipeRequest): Observable<any> {
+   let formData = new FormData();
+   formData.append("codigoTabelaReferencia", fipeRequest.codigoTabelaReferencia.toString());
+   formData.append("codigoTipoVeiculo", fipeRequest.codigoTipoVeiculo.toString());
+
+   return this.httpClient.post(this.fipeUrlDireto + this.fipeMarcasEndpoint, formData);
+ }
+
+
+  /*
+    FUNCOES E DADOS UTILIZADOS PARA CONSULTA DA FIPE ATRAVES API DE TERCEIROS
+  */
+
+ baseUrl = "https://parallelum.com.br/fipe/api/v1/";
+ marcasEndpoint = "marcas";
+ modelosEndpoint = "modelos";
+ anosEndpoint = "anos";
 
   getTipos(): Tipos[] 
   {

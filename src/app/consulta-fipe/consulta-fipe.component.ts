@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { NgxLoadingComponent } from 'ngx-loading/lib/ngx-loading.component';
+import { TabelaReferencia } from '../_models/tabelaReferencia';
+import { FipeRequest } from '../_models/fipeRequest';
 
 
 @Component({
@@ -24,6 +26,10 @@ export class ConsultaFipeComponent implements OnInit {
   public listaMarcas: Marcas[] = [];
   public listaModelos: Modelos[] = [];
   public listaAnosModelo: AnoModelo[] = [];
+
+  public listaTabelaReferencia:  TabelaReferencia[] = [];
+  public listaFipeMarcas: any;
+
   public fipe: Fipe;
   public loading: boolean = false;
   
@@ -38,6 +44,7 @@ export class ConsultaFipeComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.getTipos();
+    this.getFipeMarcas();
   }
 
   getTipos() {
@@ -101,6 +108,31 @@ export class ConsultaFipeComponent implements OnInit {
         this.toastr.error("Erro ao obter Fipe");
       }
     );
+  }
+
+  getTabelaReferencia() {
+    this.fipeservice.getFipeTabelaReferencia().subscribe(
+      tabela => {
+        this.listaTabelaReferencia = tabela;
+        console.log(tabela);
+      },
+      error => { this.toastr.error('Não foi possível obter a tabela referência') }
+    );
+  }
+
+  getFipeMarcas() {
+    let fipeRequest = new FipeRequest();
+
+    fipeRequest.codigoTipoVeiculo = 1;
+    fipeRequest.codigoTabelaReferencia = 253;
+
+    this.fipeservice.getFipeMarcas(fipeRequest).subscribe( 
+      marcas => {
+        this.listaFipeMarcas = marcas;
+        console.log(this.listaFipeMarcas);
+      },
+      error => { this.toastr.error('Não foi possível obter a tabela de marcas da fipe') }
+    )
   }
 
 
