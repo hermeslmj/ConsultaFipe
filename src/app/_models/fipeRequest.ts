@@ -3,7 +3,7 @@ export class FipeRequest {
     codigoTabelaReferencia: number;
     codigoModelo: number;
     codigoMarca: number;
-    ano: number;
+    anoModelo: number;
     codigoTipoCombustivel: number;
     tipoVeiculo: string;
     modeloCodigoExterno: number;

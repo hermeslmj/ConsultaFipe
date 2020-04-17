@@ -8,4 +8,6 @@ export class Fipe {
     MesReferencia: string;
     TipoVeiculo: number;
     SiglaCombustivel: string;
+    Autenticacao: string;
+    DataConsulta: string;
 }

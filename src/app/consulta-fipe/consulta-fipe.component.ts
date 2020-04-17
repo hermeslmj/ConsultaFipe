@@ -22,13 +22,13 @@ export class ConsultaFipeComponent implements OnInit {
   fipeForm: FormGroup;
   modalRef: BsModalRef;
 
-  public listaTipos: Tipos[] = [];
-  public listaMarcas: Marcas[] = [];
-  public listaModelos: Modelos[] = [];
-  public listaAnosModelo: AnoModelo[] = [];
-
   public listaTabelaReferencia:  TabelaReferencia[] = [];
   public listaFipeMarcas: any;
+  public listaFipeModelos: any;
+  public listaFipeAnosModelo: any;
+  public listaFipeTipos: any;
+  
+  public fipeRequest = new FipeRequest();
 
   public fipe: Fipe;
   public loading: boolean = false;
@@ -43,101 +43,112 @@ export class ConsultaFipeComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.getTipos();
-    this.getFipeMarcas();
+    this.getFipeTipos();
+    this.getTabelaReferencia();
+    
   }
 
-  getTipos() {
-    this.listaTipos = this.fipeservice.getTipos();
+  setLoading(state: boolean = true){
+    this.loading = state;
   }
 
-  getMarcas(tipo: string) {
-    this.loading = true;
-    this.fipeservice.getMarcas(tipo).subscribe(
-      (marcas) => {
-        this.listaMarcas = marcas;
-        this.loading = false;
-      },
-      error => {
-        this.loading = false;
-        this.toastr.error("Erro ao obter Marcas");
-      }
-    );
-  }
+  // FUNCOES DE BUSCA DE TABELA FIPE DIRETO DA FIPE OFICIAL
 
-  getModelos(tipo: string, codMarca: number) {
-    this.loading = true;
-    this.fipeservice.getModelos(tipo, codMarca).subscribe(
-      (modelos) => {
-        this.listaModelos = modelos["modelos"];
-        this.listaAnosModelo = modelos["anos"];
-        this.loading = false;
-      },
-      error => {
-        this.loading = false;
-        this.toastr.error("Erro ao obter Modelos");
-      }
-    );
-  }
-
-  getAnosModelo(tipo: string, codMarca: number, codModelo:  number) {
-    this.loading = true;
-    this.fipeservice.getAnosModelo(tipo, codMarca, codModelo).subscribe(
-      (anosModelo) => {
-        this.listaAnosModelo = anosModelo;
-        this.loading = false;
-        
-      },
-      error => {
-        this.loading = false;
-        this.toastr.error("Erro ao obter Ano/Modelo");
-      }
-    );
-  }
-
-  getFipe(tipo: string, codMarca: number, codModelo:  number, anoModelo: string)
-  {
-    this.loading = true;
-    this.fipeservice.getFipe(tipo, codMarca, codModelo, anoModelo).subscribe(
-      (fipe: Fipe) => {
-        this.fipe = fipe;
-        this.loading = false;
-      },
-      error => {
-        this.loading = false;
-        this.toastr.error("Erro ao obter Fipe");
-      }
-    );
+  getFipeTipos() {
+    this.listaFipeTipos = this.fipeservice.getFipeTipos();
   }
 
   getTabelaReferencia() {
+    this.setLoading();
     this.fipeservice.getFipeTabelaReferencia().subscribe(
       tabela => {
         this.listaTabelaReferencia = tabela;
-        console.log(tabela);
+        
+        this.setLoading(false);
       },
       error => { this.toastr.error('Não foi possível obter a tabela referência') }
     );
   }
 
   getFipeMarcas() {
-    let fipeRequest = new FipeRequest();
-
-    fipeRequest.codigoTipoVeiculo = 1;
-    fipeRequest.codigoTabelaReferencia = 253;
-
-    this.fipeservice.getFipeMarcas(fipeRequest).subscribe( 
+    this.setLoading();
+    this.fipeservice.getFipeMarcas(this.fipeRequest).subscribe( 
       marcas => {
         this.listaFipeMarcas = marcas;
-        console.log(this.listaFipeMarcas);
+        
+        this.setLoading(false);
       },
       error => { this.toastr.error('Não foi possível obter a tabela de marcas da fipe') }
     )
   }
 
+  getFipeModelos() {
+    this.setLoading();
+    this.fipeservice.getFipeModelos(this.fipeRequest).subscribe( 
+      modelos => {
+        this.listaFipeModelos = modelos.Modelos;
+        this.setLoading(false);
+      },
+      error => { this.toastr.error('Não foi possível obter a tabela de modelos da fipe') }
+    )
+  }
+
+  getFipeAnosModelo() {
+    this.setLoading();
+    this.fipeservice.getFipeAnosModelo(this.fipeRequest).subscribe( 
+      anosModelo => {
+        this.listaFipeAnosModelo = anosModelo;
+        this.setLoading(false);
+      },
+      error => { this.toastr.error('Não foi possível obter a tabela de modelos da fipe') }
+    )
+  }
+
+  getFipeValores() {
+    
+    this.setLoading();
+    let anoModeloArray = this.fipeRequest.anoModelo.toString().split('-');
+
+    this.fipeRequest.anoModelo = parseInt(anoModeloArray[0]);
+    this.fipeRequest.codigoTipoCombustivel = parseInt(anoModeloArray[1]);
+    this.fipeRequest.tipoVeiculo = this.listaFipeTipos.find(x =>  x.id.toString() == this.fipeRequest.codigoTipoVeiculo.toString()).nome;
+    this.fipeRequest.tipoConsulta = "tradicional";
+
+
+
+    if(this.fipeForm.get('variacao').value){
+      let referencia = this.fipeRequest.codigoTabelaReferencia;
+      for (let index = 0; index < 3; index++) {
+        this.fipeRequest.codigoTabelaReferencia = referencia - index;
+        this.fipeservice.getFipeValores(this.fipeRequest).subscribe( 
+          valores => {
+            this.fipe = valores;
+            this.setLoading(false);
+            console.log(this.fipe);
+          },
+          error => { this.toastr.error('Não foi possível obter os valores da fipe') }
+        )
+      }
+    }
+    else{
+      this.fipeservice.getFipeValores(this.fipeRequest).subscribe( 
+        valores => {
+          this.fipe = valores;
+          this.setLoading(false);
+          console.log(this.fipe);
+        },
+        error => { this.toastr.error('Não foi possível obter os valores da fipe') }
+      )
+    }
+   
+    
+  }
+
 
   initForm() {
     this.fipeForm = this.fb.group({
+        variacao: [''],
+        referencia: [''],
         tipos: [''],
         marcas: [''],
         anos: [''],
@@ -155,7 +166,8 @@ export class ConsultaFipeComponent implements OnInit {
 
   obterFipe(template: any){
     this.limpaFipe();
-    this.getFipe(this.fipeForm.get('tipos').value, this.fipeForm.get('marcas').value, this.fipeForm.get('modelos').value , this.fipeForm.get('anos').value);
+    //this.getFipe(this.fipeForm.get('tipos').value, this.fipeForm.get('marcas').value, this.fipeForm.get('modelos').value , this.fipeForm.get('anos').value);
+    this.getFipeValores();
     this.openModal(template);
   }
 }

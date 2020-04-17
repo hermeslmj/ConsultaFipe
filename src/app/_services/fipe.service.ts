@@ -23,6 +23,16 @@ export class FipeService {
  fipeMarcasEndpoint = "/ConsultarMarcas";
  fipeModelosEndpoint= "/ConsultarModelos";
  fipeAnoModeloEndpoint = "/ConsultarAnoModelo";
+ fipeValoresEndpoint = "/ConsultarValorComTodosParametros";
+
+  getFipeTipos(){
+    let _tipos = [];
+    _tipos.push({"id": 1, "nome": "carros"});
+    _tipos.push({"id": 2, "nome": "motos"});
+    _tipos.push({"id": 3, "nome": "caminhões"});
+
+    return _tipos;
+  }
 
  getFipeTabelaReferencia(): Observable<TabelaReferencia[]> {
     return this.httpClient.post<TabelaReferencia[]>(this.fipeUrlDireto + this.fipeTabelaReferenciaEndpoint, empty);
@@ -36,90 +46,44 @@ export class FipeService {
    return this.httpClient.post(this.fipeUrlDireto + this.fipeMarcasEndpoint, formData);
  }
 
+ getFipeModelos(fipeRequest: FipeRequest): Observable<any> {
+  let formData = new FormData();
+  formData.append("codigoTabelaReferencia", fipeRequest.codigoTabelaReferencia.toString());
+  formData.append("codigoTipoVeiculo", fipeRequest.codigoTipoVeiculo.toString());
+  formData.append("codigoMarca", fipeRequest.codigoMarca.toString());
 
-  /*
-    FUNCOES E DADOS UTILIZADOS PARA CONSULTA DA FIPE ATRAVES API DE TERCEIROS
-  */
+  return this.httpClient.post(this.fipeUrlDireto + this.fipeModelosEndpoint, formData);
 
- baseUrl = "https://parallelum.com.br/fipe/api/v1/";
- marcasEndpoint = "marcas";
- modelosEndpoint = "modelos";
- anosEndpoint = "anos";
+ }
 
-  getTipos(): Tipos[] 
-  {
-    let _tipos: Tipos[] = [];
+ getFipeAnosModelo(fipeRequest: FipeRequest): Observable<any> {
+  let formData = new FormData();
+  formData.append("codigoTabelaReferencia", fipeRequest.codigoTabelaReferencia.toString());
+  formData.append("codigoTipoVeiculo", fipeRequest.codigoTipoVeiculo.toString());
+  formData.append("codigoMarca", fipeRequest.codigoMarca.toString());
+  formData.append("codigoModelo", fipeRequest.codigoModelo.toString());
 
-    let T1 = new Tipos();
-    let T2 = new Tipos();
-    let T3 = new Tipos();
-    T1.nome = "carros";
-    T2.nome = "motos";
-    T3.nome = "caminhoes";
+  return this.httpClient.post(this.fipeUrlDireto + this.fipeAnoModeloEndpoint, formData);
 
-    _tipos.push(T1);
-    _tipos.push(T2);
-    _tipos.push(T3);
+ }
 
-    
-    return _tipos;
-  }
+ getFipeValores(fipeRequest: FipeRequest): Observable<any> {
+  let formData = new FormData();
 
-
-  getMarcas(tipo: string): Observable<Marcas[]> 
-  {
-      return this.httpClient.get<Marcas[]>(this.baseUrl + tipo + "/" + this.marcasEndpoint);
-  }
-
-  getModelos(tipo: string, codMarca: number): Observable<any>
-  {
-    return this.httpClient.get<any>(this.baseUrl + tipo + "/" + this.marcasEndpoint + "/" + codMarca + "/" + this.modelosEndpoint);
-  }
-
-  getAnosModelo(tipo: string, codMarca: number, codModelo:  number): Observable<AnoModelo[]>
-  {
-    return this.httpClient.get<AnoModelo[]>
-      (
-        this.baseUrl + 
-        tipo + 
-        "/" + 
-        this.marcasEndpoint +
-        "/" + 
-        codMarca + 
-        "/" + 
-        this.modelosEndpoint + 
-        "/" + 
-        codModelo +
-        "/" + 
-        this.anosEndpoint
-      );
-  }
-
-  getFipe(tipo: string, codMarca: number, codModelo:  number, anoModelo: string): Observable<Fipe> 
-  {
-    return this.httpClient.get<Fipe>
-      (
-        this.baseUrl + 
-        tipo + 
-        "/" + 
-        this.marcasEndpoint +
-        "/" + 
-        codMarca + 
-        "/" + 
-        this.modelosEndpoint + 
-        "/" + 
-        codModelo +
-        "/" +
-        this.anosEndpoint +
-        "/" +
-        anoModelo
-      );
-  }
-
-
-
+  formData.append("codigoTabelaReferencia", fipeRequest.codigoTabelaReferencia.toString());
+  formData.append("codigoTipoVeiculo", fipeRequest.codigoTipoVeiculo.toString());
+  formData.append("codigoMarca", fipeRequest.codigoMarca.toString());
+  formData.append("codigoModelo", fipeRequest.codigoModelo.toString());
+  formData.append("anoModelo", fipeRequest.anoModelo.toString());
+  
+  formData.append("codigoTipoCombustivel", fipeRequest.codigoTipoCombustivel.toString());
+  formData.append("tipoVeiculo", fipeRequest.tipoVeiculo.toString());
+  formData.append("tipoConsulta", fipeRequest.tipoConsulta.toString());
 
   
 
+  return this.httpClient.post(this.fipeUrlDireto + this.fipeValoresEndpoint, formData);
+
+ }
 
 }

@@ -1,38 +1,53 @@
+
 <form [formGroup]="fipeForm">
     <div class="form-row">
         <div class="col">
+            <input formControlName="variacao" class="form-check-input" type="checkbox" value="" id="checkbox-variacao">
+            <label class="form-check-label" for="checkbox-variacao">
+              Ver últimos 12 meses a partir da referência
+            </label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <label for="select-referencia">Mês Referência</label>
+            <select formControlName="referencia" class="form-control" id="select-referencia" [(ngModel)]="fipeRequest.codigoTabelaReferencia">
+                <option *ngFor="let ref of listaTabelaReferencia" [value]="ref.Codigo">{{ ref.Mes }}</option>
+              </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
             <label for="select-tipos">Tipos de Veículos</label>
-            <select formControlName="tipos" class="form-control" id="select-tipos" (change)="getMarcas($event.target.value)">
-                <option *ngFor="let tp of listaTipos" [value]="tp.nome">{{ tp.nome }}</option>
+            <select formControlName="tipos" class="form-control" id="select-tipos" [(ngModel)]="fipeRequest.codigoTipoVeiculo" (change)="getFipeMarcas()">
+                <option *ngFor="let tp of listaFipeTipos" [value]="tp.id">{{ tp.nome }}</option>
               </select>
         </div>
     </div>
     <div class="form-row">
         <div class="col">
             <label for="select-marcas">Marcas</label>
-            <select formControlName="marcas" class="form-control" id="select-marcas" (change)="getModelos(fipeForm.get('tipos').value, $event.target.value)">
+            <select formControlName="marcas" class="form-control" id="select-marcas" (change)="getFipeModelos()" [(ngModel)]="fipeRequest.codigoMarca">
                 <option></option>
-                <option *ngFor="let m of listaMarcas" [value]="m.codigo" >{{ m.nome }}</option>
+                <option *ngFor="let m of listaFipeMarcas" [value]="m.Value" >{{ m.Label }}</option>
             </select>
         </div>
     </div>
     <div class="form-row">
         <div class="col">
             <label for="select-modelos">Modelos</label>
-            <select formControlName="modelos" class="form-control" id="select-modelos"
-                (change)="getAnosModelo(fipeForm.get('tipos').value, fipeForm.get('marcas').value, $event.target.value)"
-            >
+            <select formControlName="modelos" class="form-control" id="select-modelos" (change)="getFipeAnosModelo()" [(ngModel)]="fipeRequest.codigoModelo">
                 <option></option>
-                <option *ngFor="let md of listaModelos" [value]="md.codigo" >{{ md.nome }}</option>
+                <option *ngFor="let md of listaFipeModelos" [value]="md.Value" >{{ md.Label }}</option>
             </select>
         </div>
     </div>
     <div class="form-row">
         <div class="col">
             <label for="select-anos">Anos</label>
-            <select formControlName="anos" class="form-control" id="select-anos">
+            <select formControlName="anos" class="form-control" id="select-anos" [(ngModel)]="fipeRequest.anoModelo"> 
                 <option></option>
-                <option *ngFor="let am of listaAnosModelo" [value]="am.codigo" >{{ am.nome }}</option>
+                <option *ngFor="let am of listaFipeAnosModelo" [value]="am.Value" >{{ am.Label.replace("32000","0 KM") }}</option>
             </select>
         </div>
     </div>
@@ -50,7 +65,7 @@
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" *ngIf="fipe != null">
+            <div class="modal-body" *ngIf="fipe != null && fipeForm.get('variacao').value != true">
                 <div class="card">
                     <div class="card-header text-center">
                         {{fipe.Modelo}}
@@ -65,13 +80,16 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Código Fipe: {{fipe.CodigoFipe}}</div>
-                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Ano: {{fipe.AnoModelo}}</div>
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center" *ngIf="fipe.AnoModelo != undefined">Ano: {{fipe.AnoModelo.toString().replace("32000","0 KM") }}</div>
                         </div>
                     </div>
                     <div class="card-footer text-center">
                        Mês Referência: {{fipe.MesReferencia}}
                     </div>
                 </div>
+            </div>
+            <div class="modal-body" *ngIf="fipe != null && fipeForm.get('variacao').value == true">
+                <h4>Não implementado ainda</h4>
             </div>
         </div>
     </div>
