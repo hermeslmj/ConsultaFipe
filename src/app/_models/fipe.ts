@@ -10,4 +10,5 @@ export class Fipe {
     SiglaCombustivel: string;
     Autenticacao: string;
     DataConsulta: string;
+    Ordenacao: number;
 }

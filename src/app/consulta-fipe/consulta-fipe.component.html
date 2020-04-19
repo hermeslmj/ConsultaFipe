@@ -65,32 +65,55 @@
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" *ngIf="fipe != null && fipeForm.get('variacao').value != true">
-                <div class="card">
+            
+            <div class="modal-body" >
+                <div class="card" *ngIf="fipe != null && fipeForm.get('variacao').value != true && fipe.length == 1">
                     <div class="card-header text-center">
-                        {{fipe.Modelo}}
+                        {{fipe[0].Modelo}}
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" >
                         <div class="row">
-                            <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 alert-success text-center"><h5 class="card-title">Valor: {{fipe.Valor}}</h5></div>
+                            <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 alert-success text-center"><h5 class="card-title">Valor: {{fipe[0].Valor}}</h5></div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Marca: {{fipe.Marca}}</div>
-                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Combustível: {{fipe.Combustivel}}</div>
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Marca: {{fipe[0].Marca}}</div>
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Combustível: {{fipe[0].Combustivel}}</div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Código Fipe: {{fipe.CodigoFipe}}</div>
-                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center" *ngIf="fipe.AnoModelo != undefined">Ano: {{fipe.AnoModelo.toString().replace("32000","0 KM") }}</div>
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Código Fipe: {{fipe[0].CodigoFipe}}</div>
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center" *ngIf="fipe[0].AnoModelo != undefined">Ano: {{fipe[0].AnoModelo.toString().replace("32000","0 KM") }}</div>
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                       Mês Referência: {{fipe.MesReferencia}}
+                       Mês Referência: {{fipe[0].MesReferencia}}
+                    </div>
+                </div>
+                <div class="card" *ngIf="fipe != null && fipeForm.get('variacao').value == true && fipe.length == 12">
+                    <div class="card-header text-center">
+                        {{fipe[0].Modelo}}
+                    </div>
+                    <div class="card-body" *ngFor="let f of (fipe | ordenaFipe)">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 alert-success text-center"><h5 class="card-title">Valor: {{f.Valor}}</h5></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Marca: {{f.Marca}}</div>
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Combustível: {{f.Combustivel}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center">Código Fipe: {{f.CodigoFipe}}</div>
+                            <div class="col-xs-6 col-md-6 col-sm-6 col-lg-6 text-center" *ngIf="f.AnoModelo != undefined">Ano: {{f.AnoModelo.toString().replace("32000","0 KM") }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 text-center">Mês Referência: {{f.MesReferencia}}</div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                       Valores dos últimos 12 meses a partir de {{fipe[0].MesReferencia}}
                     </div>
                 </div>
             </div>
-            <div class="modal-body" *ngIf="fipe != null && fipeForm.get('variacao').value == true">
-                <h4>Não implementado ainda</h4>
-            </div>
+            
         </div>
     </div>
 </div>

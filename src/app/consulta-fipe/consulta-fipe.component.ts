@@ -9,6 +9,7 @@ import { TabelaReferencia } from '../_models/tabelaReferencia';
 import { FipeRequest } from '../_models/fipeRequest';
 
 
+
 @Component({
   selector: 'app-consulta-fipe',
   templateUrl: './consulta-fipe.component.html',
@@ -30,7 +31,7 @@ export class ConsultaFipeComponent implements OnInit {
   
   public fipeRequest = new FipeRequest();
 
-  public fipe: Fipe;
+  public fipe: Fipe[];
   public loading: boolean = false;
   
   
@@ -118,13 +119,14 @@ export class ConsultaFipeComponent implements OnInit {
 
     if(this.fipeForm.get('variacao').value){
       let referencia = this.fipeRequest.codigoTabelaReferencia;
-      for (let index = 0; index < 3; index++) {
+      for (let index = 0; index < 12; index++) {
         this.fipeRequest.codigoTabelaReferencia = referencia - index;
         this.fipeservice.getFipeValores(this.fipeRequest).subscribe( 
           valores => {
-            this.fipe = valores;
+            valores.Ordenacao = index;
+            this.fipe.push(valores);
             this.setLoading(false);
-            console.log(this.fipe);
+            
           },
           error => { this.toastr.error('Não foi possível obter os valores da fipe') }
         )
@@ -133,9 +135,9 @@ export class ConsultaFipeComponent implements OnInit {
     else{
       this.fipeservice.getFipeValores(this.fipeRequest).subscribe( 
         valores => {
-          this.fipe = valores;
+          valores.Ordenacao = 0;
+          this.fipe.push(valores);
           this.setLoading(false);
-          console.log(this.fipe);
         },
         error => { this.toastr.error('Não foi possível obter os valores da fipe') }
       )
@@ -161,13 +163,12 @@ export class ConsultaFipeComponent implements OnInit {
   }
 
   limpaFipe(){
-    this.fipe = new Fipe();
+    this.fipe = [];
   }
 
   obterFipe(template: any){
     this.limpaFipe();
-    //this.getFipe(this.fipeForm.get('tipos').value, this.fipeForm.get('marcas').value, this.fipeForm.get('modelos').value , this.fipeForm.get('anos').value);
-    this.getFipeValores();
+    this.getFipeValores()
     this.openModal(template);
   }
 }

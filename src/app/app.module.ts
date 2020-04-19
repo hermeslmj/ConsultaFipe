@@ -12,10 +12,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConsultaFipeComponent } from './consulta-fipe/consulta-fipe.component';
 
+import { OrdenaFipePipe } from './_pipes/ordenaFipe.pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
-    ConsultaFipeComponent
+    ConsultaFipeComponent,
+    OrdenaFipePipe
   ],
   imports: [
     BrowserModule,
